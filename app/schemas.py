@@ -38,3 +38,8 @@ class UserSchema(BaseModel):
         if password1 is not None and value != password1:
             raise ValueError("Пароли не совпадают")
         return value
+
+
+class UserLogin(BaseModel):
+    name: str = Field(..., max_length=30)
+    password: str
