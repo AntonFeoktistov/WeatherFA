@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+import re
+
+from pydantic import BaseModel, Field, field_validator
 
 
 class LocationSchema(BaseModel):
@@ -13,3 +15,26 @@ class WeatherSchema(BaseModel):
     temperature: float = 0
     description: str = ""
     wind_speed: float = 0
+
+
+class UserSchema(BaseModel):
+    name: str = Field(..., max_length=30)
+    password1: str
+    password2: str
+
+    @field_validator("password1")
+    @classmethod
+    def validate_password_strength(cls, value: str) -> str:
+        if len(re.findall(r"[A-Za-z]", value)) < 2:
+            raise ValueError("Пароль должен содержать минимум 2 латинские буквы")
+        if len(re.findall(r"\d", value)) < 2:
+            raise ValueError("Пароль должен содержать минимум 2 цифры")
+        return value
+
+    @field_validator("password2")
+    @classmethod
+    def validate_passwords_match(cls, value: str, info) -> str:
+        password1 = info.data.get("password1")
+        if password1 is not None and value != password1:
+            raise ValueError("Пароли не совпадают")
+        return value

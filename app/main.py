@@ -1,9 +1,15 @@
-from fastapi import FastAPI, Query
+from fastapi import Depends, FastAPI, HTTPException, Query, status
+from sqlalchemy.orm import Session
 
-from app.schemas import WeatherSchema
+from app.auth import hash_password
+from app.database import Base, engine, get_db
+from app.repository import UserRepository
+from app.schemas import UserSchema, WeatherSchema
 from app.weather_service import WeatherFinder
 
 app = FastAPI()
+user_rep = UserRepository()
+Base.metadata.create_all(bind=engine)
 
 
 @app.get("/")
@@ -21,3 +27,18 @@ async def find_weather(location_name: str = Query(..., max_length=30)):
     weather_finder = WeatherFinder()
     weather = weather_finder.get_weather_by_location_name(location_name)
     return weather
+
+
+@app.post("/register", status_code=status.HTTP_201_CREATED)
+async def register(user_data: UserSchema, db: Session = Depends(get_db)):
+    user = user_rep.get_user_by_name(db, user_data.name)
+    if user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User with this name already exists",
+        )
+    hashed_password = hash_password(user_data.password1)
+    user = user_rep.create_user(db, user_data.name, hashed_password)
+
+    db.commit()
+    return {"message": "User created successfully", "username": user_data.name}
