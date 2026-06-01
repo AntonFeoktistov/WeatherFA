@@ -33,4 +33,14 @@
   "wind_speed": 6.97
 }
 
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzgwMzE1NTI1fQ.O8HBUL1WebYWOwueJO5DuDRhG-3BVOKCh8NkjruW8R4"
+{
+  "location": {
+    "name_en": "Moscow",
+    "name_ru": "Москва",
+    "lon": 37.617,
+    "lat": 55.75
+  },
+  "temperature": 19.41,
+  "description": "пасмурно",
+  "wind_speed": 3.85
+}

@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models import Location, User
-from app.schemas import WeatherSchema
+from app.schemas import LocationSchema, WeatherSchema
 
 
 class UserRepository:
@@ -53,4 +53,37 @@ class LocationRepository:
         )
         session.add(location)
         session.flush()
+        return location
+
+    def update_location(self, session: Session, user: User, weather: WeatherSchema):
+        loc = weather.location
+        weather_data_to_update = {
+            "temperature": weather.temperature,
+            "description": weather.description,
+            "wind_speed": weather.wind_speed,
+        }
+
+        stmt = select(Location).where(
+            Location.user_id == user.id, Location.name_en == loc.name_en
+        )
+        location = session.scalars(stmt).first()
+        if not location:
+            return LocationSchema()
+        location.weather_data = weather_data_to_update
+
+        session.flush()
+        return location
+
+    def delete_location(self, session: Session, user: User, location_name: str):
+        stmt = select(Location).where(
+            Location.user_id == user.id, Location.name_en == location_name
+        )
+        location = session.scalars(stmt).first()
+
+        if not location:
+            return None
+
+        session.delete(location)
+        session.flush()
+
         return location
