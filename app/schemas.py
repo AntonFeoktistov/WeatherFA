@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -41,5 +42,18 @@ class UserSchema(BaseModel):
 
 
 class UserLogin(BaseModel):
-    name: str = Field(..., max_length=30)
+    username: str = Field(..., max_length=30)
     password: str
+
+
+class LocationOut(BaseModel):
+    id: int
+    name_en: str
+    name_ru: str
+    lat: float
+    lon: float
+    weather_data: dict
+    weather_updated_at: datetime | None
+
+    class Config:
+        from_attributes = True

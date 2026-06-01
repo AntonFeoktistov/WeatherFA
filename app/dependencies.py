@@ -7,10 +7,10 @@ from app.database import get_db
 from app.repository import UserRepository
 
 security = HTTPBearer()
+user_repo = UserRepository()
 
 
 def get_current_user(
-    user_repo: UserRepository,
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db),
 ):

@@ -1,0 +1,36 @@
+{
+  "location": {
+    "name_en": "Minsk",
+    "name_ru": "Минск",
+    "lon": 27.562,
+    "lat": 53.902
+  },
+  "temperature": 18.46,
+  "description": "небольшая облачность",
+  "wind_speed": 2.47
+}
+
+{
+  "location": {
+    "name_en": "Beijing",
+    "name_ru": "Пекин",
+    "lon": 116.391,
+    "lat": 39.906
+  },
+  "temperature": 31.94,
+  "description": "ясно",
+  "wind_speed": 6.97
+}
+{
+  "location": {
+    "name_en": "Beijing",
+    "name_ru": "Пекин",
+    "lon": 116.391,
+    "lat": 39.906
+  },
+  "temperature": 31.94,
+  "description": "ясно",
+  "wind_speed": 6.97
+}
+
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzgwMzE1NTI1fQ.O8HBUL1WebYWOwueJO5DuDRhG-3BVOKCh8NkjruW8R4"
