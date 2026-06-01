@@ -1,4 +1,3 @@
-import re
 from datetime import datetime
 
 from pydantic import BaseModel, Field, field_validator
@@ -22,15 +21,6 @@ class UserSchema(BaseModel):
     name: str = Field(..., max_length=30)
     password1: str
     password2: str
-
-    @field_validator("password1")
-    @classmethod
-    def validate_password_strength(cls, value: str) -> str:
-        if len(re.findall(r"[A-Za-z]", value)) < 2:
-            raise ValueError("Пароль должен содержать минимум 2 латинские буквы")
-        if len(re.findall(r"\d", value)) < 2:
-            raise ValueError("Пароль должен содержать минимум 2 цифры")
-        return value
 
     @field_validator("password2")
     @classmethod

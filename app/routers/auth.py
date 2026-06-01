@@ -1,3 +1,5 @@
+import re
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -18,7 +20,7 @@ async def register(user_data: UserSchema, db: Session = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User with this name already exists",
         )
-
+    _validate_password_strength(user_data.password1)
     hashed_password = hash_password(user_data.password1)
     user_repo.create_user(db, user_data.name, hashed_password)
     db.commit()
@@ -35,3 +37,16 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
 
     access_token = create_access_token(data={"sub": str(user.id)})
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+def _validate_password_strength(password: str) -> None:
+    if len(re.findall(r"[A-Za-z]", password)) < 2:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Пароль должен содержать минимум 2 латинские буквы",
+        )
+    if len(re.findall(r"\d", password)) < 2:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Пароль должен содержать минимум 2 цифры",
+        )

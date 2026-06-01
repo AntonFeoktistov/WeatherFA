@@ -36,7 +36,7 @@ class Location(Base):
     lon: Mapped[float] = mapped_column(Numeric(6, 3), nullable=False)
     weather_data: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     weather_updated_at: Mapped[datetime | None] = mapped_column(
-        DateTime, nullable=True, server_default=func.now(), onupdate=func.now()
+        DateTime, nullable=True, default=func.now(), onupdate=func.now()
     )
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
