@@ -71,9 +71,9 @@ async def update_location(
         )
 
     weather_finder = WeatherFinder()
-    weather = weather_finder.get_weather_by_location_name(location_name)
-
-    if not weather or not weather.location.name_en:
+    try:
+        weather = weather_finder.get_weather_by_location_name(location_name)
+    except (LocationNotFoundError, WeatherNotFoundError):
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail="Could not fetch weather data",

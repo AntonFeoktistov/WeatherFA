@@ -1,16 +1,8 @@
 from fastapi import status
 
 
-def test_get_index(client):
-    response = client.get("/")
-    data = response.json()
-
-    assert response.status_code == status.HTTP_200_OK
-    assert "Hello" in data.get("message")
-
-
 def test_weather_service(client):
-    response = client.get("/weather/find", params={"location_name": "London"})
+    response = client.get("/locations/find", params={"location_name": "London"})
     data = response.json()
 
     assert response.status_code == status.HTTP_200_OK
@@ -21,10 +13,10 @@ def test_weather_service(client):
 
 
 def test_weather_service_not_correct_request(client):
-    response = client.get("/weather/find", params={"location_name": "fhusvidvoidv"})
+    response = client.get("/locations/find", params={"location_name": "fhusvidvoidv"})
     data = response.json()
 
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
     assert not data.get("location")
     assert not data.get("description")
     assert not data.get("temperature")

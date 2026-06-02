@@ -33,7 +33,7 @@ class WeatherFinder:
             locations = response.json()
 
             if not locations:
-                return LocationSchema()
+                return LocationNotFoundError()
 
             location = locations[0]
             local_names = location.get("local_names", {})
@@ -53,18 +53,14 @@ class WeatherFinder:
 
     def _get_weather_by_location(self, location: LocationSchema):
 
-        if not location.name_en:
-            return LocationNotFoundError()
-
-        params = {
-            "lat": location.lat,
-            "lon": location.lon,
-            "appid": self.api_key,
-            "units": "metric",
-            "lang": "ru",
-        }
-
         try:
+            params = {
+                "lat": location.lat,
+                "lon": location.lon,
+                "appid": self.api_key,
+                "units": "metric",
+                "lang": "ru",
+            }
             response = requests.get(self.weather_url, params=params, timeout=10)
             data = response.json()
 
