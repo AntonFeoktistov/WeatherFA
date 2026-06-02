@@ -3,7 +3,11 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.dependencies import get_current_user
-from app.errors import LocationNotFoundError, WeatherNotFoundError
+from app.errors import (
+    LocationNotFoundError,
+    WeatherNotFoundError,
+    WeatherServiceUnavailableError,
+)
 from app.models import User
 from app.repository import LocationRepository
 from app.schemas import LocationOut, WeatherSchema
@@ -14,11 +18,16 @@ location_repo = LocationRepository()
 
 
 @router.get("/find", response_model=WeatherSchema)
-async def find_weather(location_name: str = Query(..., max_length=30)):
+def find_weather(location_name: str = Query(..., max_length=30)):
     weather_finder = WeatherFinder()
     try:
         weather = weather_finder.get_weather_by_location_name(location_name)
         return weather
+    except WeatherServiceUnavailableError:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Weather service is temporarily unavailable. Try again later.",
+        )
     except (LocationNotFoundError, WeatherNotFoundError):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -35,7 +44,7 @@ def get_locations(
 
 
 @router.post("/add", status_code=status.HTTP_201_CREATED)
-async def add_location(
+def add_location(
     weather: WeatherSchema,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -56,7 +65,7 @@ async def add_location(
 
 
 @router.put("/{location_name}", status_code=status.HTTP_200_OK)
-async def update_location(
+def update_location(
     location_name: str,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -73,6 +82,11 @@ async def update_location(
     weather_finder = WeatherFinder()
     try:
         weather = weather_finder.get_weather_by_location_name(location_name)
+    except WeatherServiceUnavailableError:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Weather service is temporarily unavailable. Try again later.",
+        )
     except (LocationNotFoundError, WeatherNotFoundError):
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
@@ -86,7 +100,7 @@ async def update_location(
 
 
 @router.delete("/{location_name}", status_code=status.HTTP_200_OK)
-async def delete_location(
+def delete_location(
     location_name: str,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),

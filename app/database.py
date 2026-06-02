@@ -8,7 +8,11 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-engine = create_engine(DATABASE_URL, echo=True)
+_sql_echo = os.getenv("SQL_ECHO", "").lower() in ("1", "true", "yes")
+if not _sql_echo:
+    _sql_echo = os.getenv("ENVIRONMENT", "development") == "development"
+
+engine = create_engine(DATABASE_URL, echo=_sql_echo)
 SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
 
 

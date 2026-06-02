@@ -15,7 +15,8 @@ services:
     environment:
       - DATABASE_URL=postgresql://weather_user:weather_pass@postgres:5432/weather_db
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   frontend:
     build: ./frontend
