@@ -1,12 +1,11 @@
 import re
 
+from auth import create_access_token, hash_password, verify_password
+from database import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
+from repository import UserRepository
+from schemas import UserLogin, UserSchema
 from sqlalchemy.orm import Session
-
-from app.auth import create_access_token, hash_password, verify_password
-from app.database import get_db
-from app.repository import UserRepository
-from app.schemas import UserLogin, UserSchema
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 user_repo = UserRepository()

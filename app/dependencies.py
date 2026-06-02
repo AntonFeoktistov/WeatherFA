@@ -1,13 +1,12 @@
+from auth import decode_access_token
+from database import get_db
 from fastapi import Depends, HTTPException
 from fastapi.security import (
     HTTPAuthorizationCredentials,
     HTTPBearer,
 )
+from repository import UserRepository
 from sqlalchemy.orm import Session
-
-from app.auth import decode_access_token
-from app.database import get_db
-from app.repository import UserRepository
 
 security = HTTPBearer()
 user_repo = UserRepository()

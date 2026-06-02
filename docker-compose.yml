@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./app
+    container_name: weather-backend
+    env_file:
+      - .env 
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    environment:
+      - DATABASE_URL=sqlite:///./weather.db
+
+  frontend:
+    build: ./frontend
+    container_name: weather-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend

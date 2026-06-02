@@ -2,9 +2,8 @@ import os
 
 import requests
 from dotenv import load_dotenv
-
-from app.errors import LocationNotFoundError, WeatherNotFoundError
-from app.schemas import LocationSchema, WeatherSchema
+from errors import LocationNotFoundError, WeatherNotFoundError
+from schemas import LocationSchema, WeatherSchema
 
 load_dotenv()
 
@@ -33,7 +32,7 @@ class WeatherFinder:
             locations = response.json()
 
             if not locations:
-                return LocationNotFoundError()
+                raise LocationNotFoundError()
 
             location = locations[0]
             local_names = location.get("local_names", {})

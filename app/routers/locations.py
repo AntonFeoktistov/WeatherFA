@@ -1,13 +1,12 @@
+from database import get_db
+from dependencies import get_current_user
+from errors import LocationNotFoundError, WeatherNotFoundError
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from models import User
+from repository import LocationRepository
+from schemas import LocationOut, WeatherSchema
 from sqlalchemy.orm import Session
-
-from app.database import get_db
-from app.dependencies import get_current_user
-from app.errors import LocationNotFoundError, WeatherNotFoundError
-from app.models import User
-from app.repository import LocationRepository
-from app.schemas import LocationOut, WeatherSchema
-from app.weather_service import WeatherFinder
+from weather_service import WeatherFinder
 
 router = APIRouter(prefix="/locations", tags=["locations"])
 location_repo = LocationRepository()
