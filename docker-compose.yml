@@ -1,17 +1,21 @@
-version: '3.8'
-
 services:
   backend:
-    build: ./app
-    container_name: weather-backend
+    build:
+      context: .
+      dockerfile: app/Dockerfile
     env_file:
-      - .env 
+      - .env
+    container_name: weather-backend
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app
+      - ./app:/workspace/app
+      - ./alembic.ini:/workspace/alembic.ini
+      - ./alembic:/workspace/alembic
     environment:
-      - DATABASE_URL=sqlite:///./weather.db
+      - DATABASE_URL=postgresql://weather_user:weather_pass@postgres:5432/weather_db
+    depends_on:
+      - postgres
 
   frontend:
     build: ./frontend
@@ -20,3 +24,23 @@ services:
       - "80:80"
     depends_on:
       - backend
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: weather-postgres
+    environment:
+      POSTGRES_USER: weather_user
+      POSTGRES_PASSWORD: weather_pass
+      POSTGRES_DB: weather_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U weather_user -d weather_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

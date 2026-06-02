@@ -1,10 +1,11 @@
 from datetime import datetime, timezone
 
-from errors import LocationNotFoundError
-from models import Location, User
-from schemas import WeatherSchema
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+
+from app.errors import LocationNotFoundError
+from app.models import Location, User
+from app.schemas import WeatherSchema
 
 
 class UserRepository:

@@ -1,6 +1,5 @@
 from datetime import datetime, timezone
 
-from database import Base
 from sqlalchemy import (
     JSON,
     DateTime,
@@ -11,6 +10,8 @@ from sqlalchemy import (
     UniqueConstraint,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from app.database import Base
 
 
 class User(Base):

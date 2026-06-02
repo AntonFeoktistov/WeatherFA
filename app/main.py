@@ -1,9 +1,7 @@
-from database import Base, engine
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import auth, locations
 
-Base.metadata.create_all(bind=engine)
+from app.routers import auth, locations
 
 app = FastAPI(
     title="Weather App API",

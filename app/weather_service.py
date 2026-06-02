@@ -2,8 +2,9 @@ import os
 
 import requests
 from dotenv import load_dotenv
-from errors import LocationNotFoundError, WeatherNotFoundError
-from schemas import LocationSchema, WeatherSchema
+
+from app.errors import LocationNotFoundError, WeatherNotFoundError
+from app.schemas import LocationSchema, WeatherSchema
 
 load_dotenv()
 
