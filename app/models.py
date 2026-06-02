@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import (
     JSON,
@@ -8,7 +8,6 @@ from sqlalchemy import (
     Numeric,
     String,
     UniqueConstraint,
-    func,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -35,8 +34,10 @@ class Location(Base):
     lat: Mapped[float] = mapped_column(Numeric(6, 3), nullable=False)
     lon: Mapped[float] = mapped_column(Numeric(6, 3), nullable=False)
     weather_data: Mapped[dict | None] = mapped_column(JSON, nullable=True)
-    weather_updated_at: Mapped[datetime | None] = mapped_column(
-        DateTime, nullable=True, default=func.now(), onupdate=func.now()
+    weather_updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
     )
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)

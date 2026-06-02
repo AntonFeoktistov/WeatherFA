@@ -1,8 +1,11 @@
+from datetime import datetime, timezone
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.errors import LocationNotFoundError
 from app.models import Location, User
-from app.schemas import LocationSchema, WeatherSchema
+from app.schemas import WeatherSchema
 
 
 class UserRepository:
@@ -68,9 +71,9 @@ class LocationRepository:
         )
         location = session.scalars(stmt).first()
         if not location:
-            return LocationSchema()
+            return LocationNotFoundError()
         location.weather_data = weather_data_to_update
-
+        location.weather_updated_at = datetime.now(timezone.utc)
         session.flush()
         return location
 

@@ -3,6 +3,7 @@ import os
 import requests
 from dotenv import load_dotenv
 
+from app.errors import LocationNotFoundError, WeatherNotFoundError
 from app.schemas import LocationSchema, WeatherSchema
 
 load_dotenv()
@@ -19,7 +20,7 @@ class WeatherFinder:
         location = self._get_location_by_name(location_name)
         weather = self._get_weather_by_location(location)
         if not weather.location:
-            return WeatherSchema()
+            raise WeatherNotFoundError()
         return weather
 
     def _get_location_by_name(self, location_name):
@@ -48,12 +49,12 @@ class WeatherFinder:
             return LocationSchema.model_validate(result)
 
         except Exception:
-            return LocationSchema()
+            raise LocationNotFoundError()
 
     def _get_weather_by_location(self, location: LocationSchema):
 
         if not location.name_en:
-            return WeatherSchema()
+            return LocationNotFoundError()
 
         params = {
             "lat": location.lat,
@@ -80,4 +81,4 @@ class WeatherFinder:
             return WeatherSchema.model_validate(result)
 
         except Exception:
-            return WeatherSchema(description="OPENWEATHER REQUEST ERROR")
+            raise WeatherNotFoundError()

@@ -11,7 +11,7 @@
         <input 
           v-model="searchCity" 
           type="text" 
-          placeholder="Введите город (Moscow, London...)" 
+          placeholder="Введите город (Minsk, Минск)" 
           @keyup.enter="searchWeather"
         />
         <button @click="searchWeather" class="btn-primary" :disabled="isSearching">
@@ -210,7 +210,7 @@ const logout = () => {
 
 const formatDate = (dateString) => {
   if (!dateString) return 'ещё не обновлялось';
-  const date = new Date(dateString);
+  const date = new Date(dateString + 'Z');
   return date.toLocaleString('ru-RU', {
     day: '2-digit',
     month: '2-digit',

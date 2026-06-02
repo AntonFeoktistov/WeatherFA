@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.dependencies import get_current_user
+from app.errors import LocationNotFoundError, WeatherNotFoundError
 from app.models import User
 from app.repository import LocationRepository
 from app.schemas import LocationOut, WeatherSchema
@@ -15,8 +16,14 @@ location_repo = LocationRepository()
 @router.get("/find", response_model=WeatherSchema)
 async def find_weather(location_name: str = Query(..., max_length=30)):
     weather_finder = WeatherFinder()
-    weather = weather_finder.get_weather_by_location_name(location_name)
-    return weather
+    try:
+        weather = weather_finder.get_weather_by_location_name(location_name)
+        return weather
+    except (LocationNotFoundError, WeatherNotFoundError):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Location is not found",
+        )
 
 
 @router.get("/", response_model=list[LocationOut])
